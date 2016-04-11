@@ -13,6 +13,7 @@ import datetime
 from django.utils import timezone
 def post_status(request):
 	paragraph = Paragraph.objects.all().order_by('-created_on')
+	paragraph = paragraph[:5]
 	user_name = request.user.username
 	show_date = datetime.datetime.now().strftime('%A, %d. %B %Y')
 	show_time = datetime.datetime.now().strftime('%H:%M')
@@ -20,7 +21,7 @@ def post_status(request):
 	change_password_page = 'http://127.0.0.1:8000/admin/password_change/'
 	logout_page = 'http://127.0.0.1:8000/admin/logout/'
 	return render_to_response(
-        'admin/type/post_status.html',{ 'paragraph' : paragraph,'user_name':user_name,'show_time':show_time,'show_date':show_date,'home_page':home_page,'logout_page':logout_page,'change_password_page':change_password_page,
+        'admin/type/post_status.html',{ 'paragraph' : paragraph,'user_name':user_name,'show_time':show_time,'show_date':show_date,'home_page':home_page,'logout_page':logout_page,'change_password_page':change_password_page,'m':1
         },
     )
 
@@ -89,6 +90,29 @@ def all_comment_for_particular_blog(request,blog_id):
 	        'admin/type/show_all_comment.html',{ 'paragraph':paragraph,'comments' : comments,'user_name':user_name,'show_time':show_time,'show_date':show_date,'home_page':home_page,'logout_page':logout_page,'change_password_page':change_password_page,
 	        },
 	    )
+
+@csrf_exempt
+def pagination(request,page_id):
+	if request.method == 'GET': 
+		page_id = int(page_id)
+		length = len(Paragraph.objects.all())
+		if page_id == 0:
+			paragraph = Paragraph.objects.all().order_by('-created_on')[:5]
+			m = 1
+		else:
+			paragraph = Paragraph.objects.all().order_by('-created_on')[5*page_id-5:5*page_id]
+			m = page_id
+		user_name = request.user.username
+		show_date = datetime.datetime.now().strftime('%A, %d. %B %Y')
+		show_time = datetime.datetime.now().strftime('%H:%M')
+		home_page = 'http://127.0.0.1:8000/admin/'
+		change_password_page = 'http://127.0.0.1:8000/admin/password_change/'
+		logout_page = 'http://127.0.0.1:8000/admin/logout/'
+		return render_to_response(
+	        'admin/type/post_status.html',{ 'paragraph' : paragraph,'user_name':user_name,'show_time':show_time,'show_date':show_date,'home_page':home_page,'logout_page':logout_page,'change_password_page':change_password_page,'m':m
+	        },
+	    )
+
 
 
 

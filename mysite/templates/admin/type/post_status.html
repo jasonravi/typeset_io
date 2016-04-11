@@ -228,6 +228,12 @@ body {
 			</div>
 		</div>
         {% endfor %}
+        <div class="row">
+          <ul class="pager">
+			  <li><a href="{% url 'type.views.pagination' m|add:"-1" %}">Previous</a></li>
+			  <li><a href="{% url 'type.views.pagination' m|add:"1" %}">Next</a></li>
+			</ul>
+		</div>
         </div>
 </body>
 <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js'></script>
@@ -236,6 +242,23 @@ body {
 <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script href="https://cdn.datatables.net/1.10.10/js/dataTables.bootstrap.min.js"></script>
 <script type="text/javascript">
+        var results = [], // contains your rows
+	    page = 1, // current page
+	    pagesize = 20; // items per page
+	    $(document).ready(function() {
+		    // objects = GetObjects();
+		    //loadPage();
+		    generatePagingLinks();
+		})
+		function generatePagingLinks() {
+		    var links = Math.ceil(results.length / pagesize); // calculate number of links
+
+		    $("#paging").children("a").remove(); // Remove existing paging links
+
+		    // generate new paging links
+		    for (var i = 0; i < links; i++)
+		        $("<a>").attr("href", "#").text(i + 1).appendTo("#paging");
+		} 
         $(function(){
 			$('#save_blog').click(function(){
 	            var title = document.getElementById("status_title").value;
